@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scalefy Ads — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue: #0066ff;
+  --blue2: #3388ff;
+  --blue3: #66aaff;
+  --bg: #050a18;
+  --bg2: #080e1f;
+  --bg3: #0c1428;
+  --card: rgba(10, 16, 35, 0.92);
+  --border: rgba(0, 102, 255, 0.18);
+  --border2: rgba(0, 102, 255, 0.35);
+  --text: #e8edf8;
+  --text2: #7a8bb0;
+  --text3: #3a4a6b;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Background ── */
+.bg-layer {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,80,200,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(0,40,120,0.12) 0%, transparent 60%),
+    var(--bg);
+}
+
+.hex-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpolygon points='28,2 54,16 54,44 28,58 2,44 2,16' fill='none' stroke='rgba(0,102,255,0.06)' stroke-width='1'/%3E%3Cpolygon points='28,52 54,66 54,94 28,108 2,94 2,66' fill='none' stroke='rgba(0,102,255,0.06)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 56px 100px;
+  opacity: 1;
+}
+
+.light-streak {
+  position: fixed; z-index: 0;
+  width: 2px; height: 40vh;
+  background: linear-gradient(to bottom, transparent, var(--blue2), transparent);
+  opacity: 0.4;
+  animation: streak 6s ease-in-out infinite;
+}
+.light-streak:nth-child(1) { left: 12%; top: -10%; animation-delay: 0s; }
+.light-streak:nth-child(2) { left: 18%; top: 20%; animation-delay: 2s; width: 1px; opacity: 0.25; }
+@keyframes streak {
+  0%,100% { transform: translateY(0) rotate(-15deg); opacity: 0.3; }
+  50% { transform: translateY(20px) rotate(-15deg); opacity: 0.5; }
+}
+
+/* ── Layout ── */
+.page { position: relative; z-index: 1; display: flex; width: 100%; min-height: 100vh; }
+
+/* ── Left Panel ── */
+.left {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px;
+  position: relative;
+}
+
+.logo-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.logo-s {
+  width: 120px; height: 120px;
+  position: relative;
+}
+
+/* SVG S logo */
+.logo-s svg {
+  width: 100%; height: 100%;
+  filter: drop-shadow(0 0 20px rgba(0,102,255,0.5));
+}
+
+.logo-text {
+  text-align: center;
+}
+.logo-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #fff;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.logo-ads {
+  display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 4px;
+}
+.logo-ads-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--blue)); max-width: 40px; }
+.logo-ads-line.r { background: linear-gradient(to left, transparent, var(--blue)); }
+.logo-ads-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700;
+  letter-spacing: 8px; color: var(--blue2);
+  text-transform: uppercase;
+}
+
+.tagline {
+  margin-top: 32px; text-align: center;
+  animation: fadeUp 0.8s ease 0.2s both;
+}
+.tagline p { font-size: 14px; color: var(--text2); line-height: 1.7; max-width: 280px; }
+
+.stats-row {
+  display: flex; gap: 32px; margin-top: 48px;
+  animation: fadeUp 0.8s ease 0.4s both;
+}
+.stat { text-align: center; }
+.stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: var(--blue2); }
+.stat-lbl { font-size: 11px; color: var(--text3); letter-spacing: 0.5px; margin-top: 2px; }
+
+/* ── Right Panel (Card) ── */
+.right {
+  width: 520px; min-width: 460px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 32px;
+}
+
+.card {
+  width: 100%; max-width: 440px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 44px 40px;
+  backdrop-filter: blur(20px);
+  animation: fadeUp 0.6s ease 0.1s both;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue2), transparent);
+}
+
+.card-title {
+  font-size: 24px; font-weight: 700; color: #fff;
+  text-align: center; margin-bottom: 6px;
+}
+.card-sub {
+  font-size: 14px; color: var(--text2);
+  text-align: center; margin-bottom: 32px;
+}
+
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block; font-size: 13px; font-weight: 500;
+  color: var(--text2); margin-bottom: 8px;
+}
+.input-wrap { position: relative; }
+.input-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--text3); font-size: 16px; pointer-events: none;
+}
+.form-input {
+  width: 100%; height: 48px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0 44px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px; color: var(--text);
+  transition: all 0.2s;
+  outline: none;
+}
+.form-input::placeholder { color: var(--text3); }
+.form-input:focus {
+  border-color: var(--blue2);
+  background: rgba(0,102,255,0.06);
+  box-shadow: 0 0 0 3px rgba(0,102,255,0.1);
+}
+.eye-btn {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--text3);
+  font-size: 16px; padding: 4px; transition: color 0.2s;
+}
+.eye-btn:hover { color: var(--text2); }
+
+.form-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.checkbox-wrap {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+}
+.checkbox-wrap input[type=checkbox] { display: none; }
+.checkbox-box {
+  width: 18px; height: 18px; border-radius: 5px;
+  background: var(--blue); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.checkbox-box svg { width: 11px; height: 11px; color: white; }
+.checkbox-lbl { font-size: 13px; color: var(--text2); }
+.forgot { font-size: 13px; color: var(--blue2); text-decoration: none; }
+.forgot:hover { color: var(--blue3); }
+
+.btn-login {
+  width: 100%; height: 50px;
+  background: var(--blue);
+  border: none; border-radius: 10px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px; font-weight: 600;
+  color: white; cursor: pointer;
+  transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.btn-login::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.btn-login:hover { background: var(--blue2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,102,255,0.4); }
+.btn-login:hover::after { transform: translateX(100%); }
+.btn-login:active { transform: translateY(0); }
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0;
+}
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+.divider-text { font-size: 12px; color: var(--text3); }
+
+.btn-google {
+  width: 100%; height: 48px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px; font-weight: 500;
+  color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.2s;
+}
+.btn-google:hover { background: rgba(255,255,255,0.07); border-color: var(--border2); }
+
+.g-icon {
+  width: 18px; height: 18px;
+}
+
+.card-foot {
+  text-align: center; margin-top: 24px;
+  font-size: 13px; color: var(--text2);
+}
+.card-foot a { color: var(--blue2); text-decoration: none; }
+.card-foot a:hover { color: var(--blue3); }
+
+/* ── Footer ── */
+.footer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 2;
+  text-align: center; padding: 14px;
+  font-size: 12px; color: var(--text3);
+}
+.footer a { color: var(--blue2); text-decoration: none; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .left { display: none; }
+  .right { width: 100%; min-width: unset; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="hex-grid"></div>
+<div class="light-streak"></div>
+<div class="light-streak"></div>
+
+<div class="page">
+  <!-- Esquerda -->
+  <div class="left">
+    <div class="logo-wrap">
+      <div class="logo-s">
+        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#66bbff"/>
+              <stop offset="100%" stop-color="#0044cc"/>
+            </linearGradient>
+            <linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#3399ff"/>
+              <stop offset="100%" stop-color="#001888"/>
+            </linearGradient>
+          </defs>
+          <!-- S shape made of two arrow-like chevrons -->
+          <path d="M75 15 L95 15 L95 35 L45 35 L45 55 L95 55 L95 105 L25 105 L25 85 L75 85 L75 65 L25 65 L25 15 Z" fill="url(#sg1)" opacity="0.15"/>
+          <!-- Top arm -->
+          <path d="M30 18 L90 18 L90 38 L50 38 L50 52 L90 52 L90 62 L40 62 L40 48 L80 48 L80 28 L30 28 Z" fill="url(#sg1)"/>
+          <!-- Bottom arm -->
+          <path d="M90 58 L30 58 L30 68 L70 68 L70 82 L30 82 L30 102 L90 102 L90 92 L40 92 L40 78 L80 78 L80 68 L90 68 Z" fill="url(#sg2)"/>
+        </svg>
+      </div>
+
+      <div class="logo-text">
+        <div class="logo-name">Scalefy</div>
+        <div class="logo-ads">
+          <div class="logo-ads-line"></div>
+          <span class="logo-ads-text">ADS</span>
+          <div class="logo-ads-line r"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tagline">
+      <p>Inteligência de mídia e vendas em tempo real. Tudo que você precisa para escalar.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-val">5</div>
+        <div class="stat-lbl">Canais integrados</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">∞</div>
+        <div class="stat-lbl">Dados em tempo real</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">100%</div>
+        <div class="stat-lbl">Atribuição</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Direita (card) -->
+  <div class="right">
+    <div class="card">
+      <div class="card-title">Bem-vindo de volta!</div>
+      <div class="card-sub">Faça login para acessar sua conta</div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <input class="form-input" type="email" placeholder="seu@email.com" id="email" autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input class="form-input" type="password" placeholder="••••••••" id="password" autocomplete="current-password" style="padding-right: 48px;" />
+            <button type="button" class="eye-btn" onclick="togglePass()">
+              <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="checkbox-wrap">
+            <input type="checkbox" checked>
+            <div class="checkbox-box">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+            </div>
+            <span class="checkbox-lbl">Lembrar-me</span>
+          </label>
+          <a href="#" class="forgot">Esqueci minha senha</a>
+        </div>
+
+        <button type="submit" class="btn-login">Entrar</button>
+      </form>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-text">ou continue com</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <button class="btn-google" type="button">
+        <svg class="g-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Entrar com Google
+      </button>
+
+      <div class="card-foot">
+        Não tem uma conta? <a href="#">Criar conta</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  © 2025 <a href="#">Scalefy Ads</a>. Todos os direitos reservados.
+</div>
+
+<script>
+function togglePass() {
+  const inp = document.getElementById('password');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-login');
+  btn.textContent = 'Entrando...';
+  btn.style.opacity = '0.8';
+  setTimeout(() => {
+    btn.textContent = 'Entrar';
+    btn.style.opacity = '1';
+    alert('Backend de autenticação ainda não configurado. Integre com JWT!');
+  }, 1500);
+}
+</script>
+</body>
+</html>
