@@ -27,6 +27,8 @@ app.get('/', (req, res) => {
 app.get('/health', (_, res) => res.json({ status: 'ok', ts: new Date() }));
 
 // Rotas principais
+const { router: authRouter } = require('./routes/auth');
+app.use('/api/auth', authRouter);
 app.use('/api', api);
 
 // Erro 404
