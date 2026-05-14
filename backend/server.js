@@ -19,6 +19,9 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Rota raiz → login
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'register.html'));
+});
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'login.html'));
 });
