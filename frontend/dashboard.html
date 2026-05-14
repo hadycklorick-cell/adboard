@@ -224,7 +224,7 @@ document.getElementById('period-label').textContent = 'Maio ' + now.getFullYear(
 async function loadAll() {
   try {
     // Buscar lista de lojas para pegar o store_id
-    const stRes = await fetch('/api/stores', { headers: hdrs });
+    
     if (!stRes.ok) { showSetup(); return; }
     const stData = await stRes.json();
     const stores = stData.stores || stData;
