@@ -22,6 +22,9 @@ app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'register.html'));
 });
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'dashboard.html'));
+});
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'login.html'));
 });
