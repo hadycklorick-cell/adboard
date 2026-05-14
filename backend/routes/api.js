@@ -51,7 +51,18 @@ router.post('/stores', auth, async (req, res) => {
 
   // Validar token na Yampi antes de salvar
   try {
-    const info = await yampi.getStoreInfo(yampi_alias, yampi_token);
+    try {
+    const { rows } = await db.query(`
+      INSERT INTO stores (name, yampi_alias, yampi_token)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (yampi_alias) DO UPDATE SET
+        yampi_token = EXCLUDED.yampi_token,
+        name        = COALESCE(EXCLUDED.name, stores.name),
+        updated_at  = NOW()
+      RETURNING id, name, yampi_alias, created_at
+    `, [name || yampi_alias, yampi_alias, yampi_token]);
+
+    res.json({ success: true, store: rows[0] });
 
     const { rows } = await db.query(`
       INSERT INTO stores (name, yampi_alias, yampi_token)
