@@ -49,9 +49,7 @@ router.post('/stores', auth, async (req, res) => {
     return res.status(400).json({ error: 'yampi_alias e yampi_token são obrigatórios' });
   }
 
-  // Validar token na Yampi antes de salvar
   try {
-    try {
     const { rows } = await db.query(`
       INSERT INTO stores (name, yampi_alias, yampi_token)
       VALUES ($1, $2, $3)
@@ -63,25 +61,8 @@ router.post('/stores', auth, async (req, res) => {
     `, [name || yampi_alias, yampi_alias, yampi_token]);
 
     res.json({ success: true, store: rows[0] });
-
-    const { rows } = await db.query(`
-      INSERT INTO stores (name, yampi_alias, yampi_token)
-      VALUES ($1, $2, $3)
-      ON CONFLICT (yampi_alias) DO UPDATE SET
-        yampi_token = EXCLUDED.yampi_token,
-        name        = COALESCE(EXCLUDED.name, stores.name),
-        updated_at  = NOW()
-      RETURNING id, name, yampi_alias, created_at
-    `, [name || info.name || yampi_alias, yampi_alias, yampi_token]);
-
-    res.json({ success: true, store: rows[0] });
   } catch (err) {
-    const status = err.response?.status === 401 ? 401 : 500;
-    res.status(status).json({
-      error: status === 401
-        ? 'Token Yampi inválido ou loja não encontrada'
-        : 'Erro ao conectar com a Yampi: ' + err.message
-    });
+    res.status(500).json({ error: 'Erro ao salvar loja: ' + err.message });
   }
 });
 
