@@ -51,7 +51,7 @@ function yampiClient(alias, token) {
 // ─── Buscar info da loja ────────────────────────────────────
 async function getStoreInfo(alias, token) {
   const client = yampiClient(alias, token);
-  const { data } = await client.get('/catalog/settings');
+  const { data } = await client.get('/merchant');
   return data.data;
 }
 
