@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scalefy Ads — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;900&family=Space+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050a18;--bg2:#080e1f;--bg3:#0c1428;
+  --blue:#0066ff;--blue2:#3388ff;--blue3:#66aaff;
+  --border:rgba(0,102,255,0.12);--border2:rgba(0,102,255,0.25);
+  --text:#e8edf8;--text2:#7a8bb0;--text3:#3a4a6b;
+  --green:#22d9a0;--red:#ff4d6a;--amber:#ffb547;
+  --meta:#1877f2;--google:#ea4335;--tiktok:#00c9c9;--taboola:#ff6b35;--kwai:#ff3d68;
+}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.platform{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:210px;min-width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-img{width:32px;height:32px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(0,102,255,0.5))}
+.logo-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:2px;color:#fff}
+.logo-sub{font-size:9px;color:var(--blue2);letter-spacing:2px}
+.nav{padding:12px 10px 6px;flex:1;overflow-y:auto}
+.nav-label{font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;padding:0 8px;margin-bottom:4px;margin-top:10px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:12px;transition:all 0.15s;text-decoration:none}
+.nav-item:hover{background:rgba(0,102,255,0.08);color:var(--text)}
+.nav-item.active{background:rgba(0,102,255,0.15);color:var(--blue2);border-left:2px solid var(--blue);padding-left:8px}
+.ch-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ch-val{margin-left:auto;font-family:'Space Mono',monospace;font-size:10px;color:var(--text3)}
+.sidebar-foot{padding:12px;border-top:1px solid var(--border)}
+.yampi-conn{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(34,217,160,0.08);border:1px solid rgba(34,217,160,0.2);border-radius:8px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.yampi-text{font-size:11px;color:#7affd4}
+.yampi-sub{font-size:9px;color:var(--text3);margin-top:1px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.page-title{font-size:15px;font-weight:500;color:var(--text)}
+.page-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green);padding:5px 10px;background:rgba(34,217,160,0.08);border:1px solid rgba(34,217,160,0.2);border-radius:20px}
+.user-badge{display:flex;align-items:center;gap:7px;padding:5px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;font-size:12px;color:var(--text2)}
+.avatar{width:22px;height:22px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white}
+.btn-logout{padding:5px 12px;background:rgba(255,77,106,0.1);border:1px solid rgba(255,77,106,0.2);border-radius:20px;font-size:11px;color:var(--red);cursor:pointer;font-family:'Barlow',sans-serif}
+.content{flex:1;overflow-y:auto;padding:18px 22px;background:var(--bg)}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);opacity:0.6}
+.kpi-label{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.kpi-val{font-family:'Space Mono',monospace;font-size:19px;font-weight:500;color:var(--text)}
+.kpi-delta{display:flex;align-items:center;gap:3px;margin-top:5px;font-size:10px}
+.up{color:var(--green)}.down{color:var(--red)}
+.kpi-bar{height:2px;background:var(--bg3);border-radius:2px;margin-top:8px}
+.kpi-fill{height:100%;border-radius:2px;background:var(--blue);transition:width 1s}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.panel-title{font-size:12px;font-weight:500;color:var(--text2)}
+.badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500}
+.badge-green{background:rgba(34,217,160,0.1);color:var(--green)}
+.badge-blue{background:rgba(0,102,255,0.12);color:var(--blue2)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:5px 8px;color:var(--text3);font-weight:400;font-size:10px;letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,102,255,0.04)}
+.mono{font-family:'Space Mono',monospace;font-size:11px;color:var(--text)}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px}
+.pill-green{background:rgba(34,217,160,0.1);color:var(--green)}
+.pill-amber{background:rgba(255,181,71,0.1);color:var(--amber)}
+.pill-red{background:rgba(255,77,106,0.1);color:var(--red)}
+.ch-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ch-name{font-size:12px;color:var(--text);width:80px;flex-shrink:0;display:flex;align-items:center;gap:6px}
+.ch-bar-wrap{flex:1;height:4px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.ch-bar-fill{height:100%;border-radius:4px}
+.ch-val-text{font-family:'Space Mono',monospace;font-size:11px;color:var(--text2);width:65px;text-align:right}
+.empty-state{text-align:center;padding:30px;color:var(--text3);font-size:12px;line-height:1.6}
+.setup-box{background:rgba(0,102,255,0.06);border:1px solid rgba(0,102,255,0.15);border-radius:10px;padding:16px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.7}
+.setup-box strong{color:var(--text);font-weight:500}
+</style>
+</head>
+<body>
+<div class="platform">
+  <div class="sidebar">
+    <div class="logo-wrap">
+      <img class="logo-img" id="sidebar-logo" src="" alt="S">
+      <div>
+        <div class="logo-name">Scalefy</div>
+        <div class="logo-sub">ADS</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Geral</div>
+      <a class="nav-item active" href="/dashboard">📊 Visão geral</a>
+      <a class="nav-item" href="/dashboard">🛒 Vendas · Yampi</a>
+      <a class="nav-item" href="/dashboard">🎯 Pixels</a>
+      <div class="nav-label">Gestores</div>
+      <div class="nav-item"><div class="ch-dot" style="background:var(--meta)"></div>Meta Ads</div>
+      <div class="nav-item"><div class="ch-dot" style="background:var(--google)"></div>Google Ads</div>
+      <div class="nav-item"><div class="ch-dot" style="background:var(--tiktok)"></div>TikTok Ads</div>
+      <div class="nav-item"><div class="ch-dot" style="background:var(--taboola)"></div>Taboola</div>
+      <div class="nav-item"><div class="ch-dot" style="background:var(--kwai)"></div>Kwai Ads</div>
+    </div>
+    <div class="sidebar-foot">
+      <div class="yampi-conn">
+        <div class="live-dot"></div>
+        <div>
+          <div class="yampi-text">Yampi conectada</div>
+          <div class="yampi-sub" id="sync-time">Carregando...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Visão Geral</div>
+        <div class="page-sub" id="period-label">Carregando...</div>
+      </div>
+      <div class="topbar-right">
+        <div class="live-badge"><div class="live-dot"></div>Tempo real</div>
+        <div class="user-badge">
+          <div class="avatar" id="user-avatar">?</div>
+          <span id="user-name">...</span>
+        </div>
+        <button class="btn-logout" onclick="logout()">Sair</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Receita total</div>
+          <div class="kpi-val" id="kpi-revenue">—</div>
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-revenue" style="width:0%;background:var(--green)"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Pedidos pagos</div>
+          <div class="kpi-val" id="kpi-orders">—</div>
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-orders" style="width:0%;background:var(--amber)"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Ticket médio</div>
+          <div class="kpi-val" id="kpi-ticket">—</div>
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-ticket" style="width:0%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Gasto em ads</div>
+          <div class="kpi-val" id="kpi-spend">—</div>
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-spend" style="width:0%;background:var(--red)"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">ROAS geral</div>
+          <div class="kpi-val" id="kpi-roas">—</div>
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-roas" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Receita por canal</div>
+            <span class="badge badge-blue" id="channels-count">—</span>
+          </div>
+          <div id="channels-list"><div class="empty-state">Carregando...</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Receita vs Gasto</div></div>
+          <div style="position:relative;height:170px"><canvas id="mainChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Últimos pedidos · Yampi</div>
+          <span class="badge badge-green">Ao vivo</span>
+        </div>
+        <div id="orders-wrap"><div class="empty-state">Carregando pedidos...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Verificar autenticação
+const token = localStorage.getItem('scalefy_token');
+const user  = JSON.parse(localStorage.getItem('scalefy_user') || '{}');
+if (!token) { window.location.href = '/'; }
+
+// Mostrar usuário
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name.split(' ')[0];
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+}
+
+function logout() {
+  localStorage.removeItem('scalefy_token');
+  localStorage.removeItem('scalefy_user');
+  window.location.href = '/';
+}
+
+function fmt(n) {
+  n = parseFloat(n) || 0;
+  if (n >= 1000) return 'R$' + (n/1000).toFixed(1) + 'k';
+  return 'R$' + Math.round(n);
+}
+
+function fmtN(n) {
+  n = parseInt(n) || 0;
+  return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n);
+}
+
+const hdrs = { 'x-api-key': 'adboard2025' };
+const now = new Date();
+const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+const end   = now.toISOString().slice(0,10);
+
+document.getElementById('period-label').textContent = 'Maio ' + now.getFullYear();
+
+async function loadAll() {
+  try {
+    // Buscar lista de lojas para pegar o store_id
+    const stRes = await fetch('/api/stores', { headers: hdrs });
+    if (!stRes.ok) { showSetup(); return; }
+    const stData = await stRes.json();
+    const stores = stData.stores || stData;
+    if (!stores || !stores.length) { showSetup(); return; }
+    const storeId = stores[0].id;
+
+    const [ovRes, chRes, dayRes, ordRes] = await Promise.all([
+      fetch('/api/dashboard/overview?store_id='+storeId+'&start='+start+'&end='+end, {headers:hdrs}),
+      fetch('/api/dashboard/channels?store_id='+storeId+'&start='+start+'&end='+end, {headers:hdrs}),
+      fetch('/api/dashboard/daily?store_id='+storeId+'&start='+start+'&end='+end, {headers:hdrs}),
+      fetch('/api/dashboard/orders?store_id='+storeId+'&limit=15', {headers:hdrs}),
+    ]);
+
+    if (ovRes.ok) {
+      const { revenue, spend, metrics } = await ovRes.json();
+      document.getElementById('kpi-revenue').textContent = fmt(revenue.gross);
+      document.getElementById('kpi-orders').textContent  = fmtN(revenue.orders_paid);
+      document.getElementById('kpi-ticket').textContent  = fmt(revenue.avg_ticket);
+      document.getElementById('kpi-spend').textContent   = fmt(spend.ads);
+      document.getElementById('kpi-roas').textContent    = (metrics.roas||0) + 'x';
+      document.getElementById('bar-revenue').style.width = Math.min(revenue.gross/500,100)+'%';
+      document.getElementById('bar-orders').style.width  = Math.min(revenue.orders_paid/10,100)+'%';
+      document.getElementById('bar-roas').style.width    = Math.min((metrics.roas||0)/5*100,100)+'%';
+    }
+
+    if (chRes.ok) {
+      const { channels } = await chRes.json();
+      renderChannels(channels);
+    }
+
+    if (dayRes.ok) {
+      const { days } = await dayRes.json();
+      renderChart(days);
+    }
+
+    if (ordRes.ok) {
+      const { orders } = await ordRes.json();
+      renderOrders(orders);
+    }
+
+  } catch(e) {
+    console.error(e);
+    showSetup();
+  }
+  document.getElementById('sync-time').textContent = 'Sync ' + new Date().toLocaleTimeString('pt-BR');
+}
+
+function showSetup() {
+  document.getElementById('orders-wrap').innerHTML = `
+    <div class="setup-box">
+      <strong>Configure o sync da Yampi para ver seus dados aqui.</strong><br>
+      Acesse o painel e inicie um sync manual via API para importar seus pedidos.
+    </div>`;
+}
+
+const chColors = { meta:'#1877f2', google:'#ea4335', tiktok:'#00c9c9', taboola:'#ff6b35', kwai:'#ff3d68', direct:'#7a8bb0' };
+
+function renderChannels(channels) {
+  if (!channels || !channels.length) {
+    document.getElementById('channels-list').innerHTML = '<div class="empty-state">Sem dados de canais ainda.</div>';
+    return;
+  }
+  const maxRev = Math.max(...channels.map(c => c.revenue));
+  document.getElementById('channels-count').textContent = channels.length + ' canais';
+  document.getElementById('channels-list').innerHTML = channels.map(c => `
+    <div class="ch-row">
+      <div class="ch-name"><div class="ch-dot" style="background:${chColors[c.channel]||'#3388ff'}"></div>${c.channel}</div>
+      <div class="ch-bar-wrap"><div class="ch-bar-fill" style="width:${maxRev>0?Math.round(c.revenue/maxRev*100):0}%;background:${chColors[c.channel]||'#3388ff'}"></div></div>
+      <div class="ch-val-text">${fmt(c.revenue)}</div>
+    </div>`).join('');
+}
+
+function renderChart(days) {
+  if (!days || !days.length) return;
+  Chart.defaults.color = '#3a4a6b';
+  Chart.defaults.borderColor = 'rgba(0,102,255,0.08)';
+  new Chart(document.getElementById('mainChart'), {
+    type:'bar',
+    data:{
+      labels: days.map(d => d.date.slice(5)),
+      datasets:[
+        {label:'Receita',data:days.map(d=>d.revenue),backgroundColor:'rgba(0,102,255,0.25)',borderColor:'#0066ff',borderWidth:1.5,borderRadius:3},
+        {label:'Gasto',data:days.map(d=>d.spend),backgroundColor:'rgba(255,77,106,0.2)',borderColor:'#ff4d6a',borderWidth:1.5,borderRadius:3}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:9},callback:v=>'R$'+Math.round(v/1000)+'k'}}}}
+  });
+}
+
+function renderOrders(orders) {
+  if (!orders || !orders.length) { showSetup(); return; }
+  const statusLabel = { paid:'Pago', pending:'Aguardando', cancelled:'Cancelado', refunded:'Reembolso' };
+  const statusPill  = { paid:'pill-green', pending:'pill-amber', cancelled:'pill-red', refunded:'pill-red' };
+  document.getElementById('orders-wrap').innerHTML = `
+    <table>
+      <thead><tr><th>Pedido</th><th>Valor</th><th>Canal</th><th>Cliente</th><th>Data</th><th>Status</th></tr></thead>
+      <tbody>${orders.map(o => `
+        <tr>
+          <td class="mono">#${o.number}</td>
+          <td class="mono">${fmt(o.total_amount)}</td>
+          <td><span style="color:${chColors[o.channel_slug]||'#7a8bb0'};font-size:11px">${o.channel_slug||'—'}</span></td>
+          <td style="font-size:11px;color:var(--text2)">${o.customer_name||'—'}</td>
+          <td style="font-size:11px">${new Date(o.yampi_created_at).toLocaleDateString('pt-BR')}</td>
+          <td><span class="pill ${statusPill[o.status]||'pill-amber'}">${statusLabel[o.status]||o.status}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+loadAll();
+setInterval(loadAll, 120000);
+</script>
+</body>
+</html>
