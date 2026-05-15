@@ -137,7 +137,7 @@ function mapOrder(storeId, raw) {
     city:               address.city          || null,
     state:              address.state         || null,
     items_count:        raw.items?.data?.length || 1,
-    yampi_created_at:   raw.created_at        || null,
+    yampi_created_at:  raw.created_at?.date ? new Date(raw.created_at.date).toISOString() : null,
   };
 }
 
