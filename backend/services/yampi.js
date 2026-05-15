@@ -36,12 +36,12 @@ function resolveChannel(order) {
 }
 
 // ─── Cliente HTTP Yampi ──────────────────────────────────────
-function yampiClient(alias, token) {
+function yampiClient(alias, token, secret) {
   return axios.create({
     baseURL: `${YAMPI_BASE}/${alias}`,
     headers: {
       'User-Token': token,
-      'User-Secret-Key': token,   // alguns endpoints usam este header
+      'User-Secret-Key': secret,
       'Content-Type': 'application/json',
     },
     timeout: 15000,
@@ -50,7 +50,7 @@ function yampiClient(alias, token) {
 
 // ─── Buscar info da loja ────────────────────────────────────
 async function getStoreInfo(alias, token) {
-  const client = yampiClient(alias, token);
+  const client = yampiClient(alias, token, secret);
   const { data } = await client.get('/merchant');
   return data.data;
 }
@@ -65,8 +65,8 @@ async function getStoreInfo(alias, token) {
  * @param {number}  opts.limit   - pedidos por página (max 100)
  * @param {function} opts.onPage - callback chamado a cada página: fn(orders, pageInfo)
  */
-async function fetchOrders(alias, token, opts = {}) {
-  const client = yampiClient(alias, token);
+async function fetchOrders(alias, token, secret, opts = {}) {
+  const client = yampiClient(alias, token, secret);
   const perPage = opts.limit || 100;
   let page = 1;
   let allOrders = [];
@@ -105,8 +105,8 @@ async function fetchOrders(alias, token, opts = {}) {
 }
 
 // ─── Buscar apenas pedidos novos/atualizados ─────────────────
-async function fetchOrdersIncremental(alias, token, sinceDate) {
-  return fetchOrders(alias, token, { since: sinceDate });
+async function fetchOrdersIncremental(alias, token, secret, sinceDate) {
+  return fetchOrders(alias, token, secret, { since: sinceDate });
 }
 
 // ─── Mapear pedido Yampi → formato do banco ─────────────────
@@ -192,7 +192,7 @@ async function syncOrders(db, store, opts = {}) {
     let recordsNew = 0;
     let recordsUpd = 0;
 
-    await fetchOrders(store.yampi_alias, store.yampi_token, {
+    await fetchOrders(store.yampi_alias, store.yampi_token, store.yampi_secret_key, {
       since: opts.since,
       onPage: async (orders, pageInfo) => {
         console.log(`[Yampi Sync] Página ${pageInfo.page}/${pageInfo.totalPages} — ${orders.length} pedidos`);
